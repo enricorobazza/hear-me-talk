@@ -19,10 +19,15 @@ const pool = new Pool({
     port: 5432
 })
 
+senders = [];
+
 io.on('connection', socket => {
-    socket.on('audioSend', (message)=>{
+    socket.on('register', (message)=>{
+        senders.push(message);
+    })
+
+    socket.on('audioSend', (array)=>{
         // console.log(message);
-        var array = JSON.parse(message);
         var datetime = new Date();
         var prevDateTime = new Date(array.time);
 
@@ -30,13 +35,13 @@ io.on('connection', socket => {
         array.stime = datetime;
         // console.log(delay);
 
-        io.emit('audioSend', JSON.stringify(array));
+        io.emit('audioSend'+array.username, array);
         // socket.emit('audioSend', 'message');
     })
 
     socket.on('timeSave', (message) => {
-        console.log(message.id + ", time: "+message.time);
-        pool.query(`INSERT INTO times(username, delay) VALUES('${message.id}', ${message.time})`);
+        console.log(`${message.username} listening to ${message.listenTo} with delay: ${message.time}`);
+        pool.query(`INSERT INTO times(username, listento, delay) VALUES('${message.username}', '${message.listenTo}',${message.time})`);
     })
 })
 
