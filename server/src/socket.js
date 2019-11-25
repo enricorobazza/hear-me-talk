@@ -40,10 +40,10 @@ io.on('connection', socket => {
     })
 
     socket.on('timeSave', (message) => {
-        console.log(`${message.username} listening to ${message.listenTo} with delay: ${message.time}`);
-        pool.query(`INSERT INTO times(username, listento, delay) VALUES('${message.username}', '${message.listenTo}',${message.time})`);
+        console.log(`${message.username} listening to ${message.listenTo} with delay: ${message.delay}`);
+        pool.query(`INSERT INTO times(username, listento, delay, sdelay) VALUES('${message.username}', '${message.listenTo}',${message.delay}, ${message.sDelay})`);
     })
 })
 
 io.listen(8000);
-app.listen(3000);
+app.listen(3001);
